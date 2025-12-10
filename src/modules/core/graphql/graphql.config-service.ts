@@ -11,6 +11,22 @@ export class GraphQLConfigService {
       playground: false,
       context: ({ req }) => ({ req }),
       plugins: [ApolloServerPluginLandingPageLocalDefault()],
+
+      formatError: (error) => {
+        const originalError = error.extensions
+          ?.originalError as any;
+
+        if (!originalError) {
+          return {
+            message: error.message,
+            code: error.extensions?.code,
+          };
+        }
+        return {
+          message: originalError.message,
+          code: error.extensions?.code,
+        };
+      },
     };
   }
 }

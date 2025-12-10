@@ -10,13 +10,13 @@ import { UpdatePostDto } from "./dtos/update-post.dto";
 export class PostService {
     constructor(@InjectModel(Post.name) private readonly postModel: Model<Post>) { }
 
-
     async create(userId: string, createPostDto: CreatePostDto) {
         const userObjectId = toObjectId(userId);
-        return await this.postModel.create({
+        const post = await this.postModel.create({
             userId: userObjectId,
             ...createPostDto
         })
+        return post.toJSON()
     }
 
     async update(userId: string, updatePostDto: UpdatePostDto) {

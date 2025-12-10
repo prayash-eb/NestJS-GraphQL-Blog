@@ -3,29 +3,32 @@ import { Post } from "./post.model";
 import { CreatePostDto } from "./dtos/create-post.dto";
 import { PostService } from "./post.service";
 import { GetUser } from "../../decorators/get-user";
-import { User } from "../user/schema/user.schema";
 import { UserService } from "../user/user.service";
 import { UpdatePostDto } from "./dtos/update-post.dto";
+import { User } from "../user/models/user.model";
+import { JwtAuthGuard } from "../auth/guards/jwt.guard";
+import { UseGuards } from "@nestjs/common";
 
 
 @Resolver(() => Post)
 export class PostResolver {
-
     constructor(
         private readonly postService: PostService,
         private readonly userService: UserService
     ) { }
 
+    // @UseGuards(JwtAuthGuard)
     @Mutation(() => Post)
-    async createPost(@GetUser("uid") userId: string, @Args("createPostInput") createPostDto: CreatePostDto) {
-        console.log(userId, createPostDto);
-        return await this.postService.create(userId, createPostDto)
+    async createPost(@GetUser() user: any, @Args("createPostInput") createPostDto: CreatePostDto) {
+        return await this.postService.create(user.id, createPostDto)
     }
 
+    @UseGuards(JwtAuthGuard)
     @Mutation(() => Post)
-    async updatePost(@GetUser("uid") userId: string, @Args("updatePostInput") updatePostDto: UpdatePostDto) {
-        return await this.postService.update(userId, updatePostDto)
+    async updatePost(@GetUser() user: any, @Args("updatePostInput") updatePostDto: UpdatePostDto) {
+        return await this.postService.update(user.id, updatePostDto)
     }
+
     @Query(() => [Post])
     async getPosts() {
         return await this.postService.findAll()
@@ -36,9 +39,14 @@ export class PostResolver {
         return await this.postService.findById(postId)
     }
 
-    // @ResolveField(() => User)
-    // async getAuthor(@Parent() post: Post){
-    //     const userId = String(post.user)
-    //     return await this.userService.findById(userId)
-    // }
+    @ResolveField(() => User)
+    async user(@Parent() post: Post) {
+        const userId = post.user.toString()
+        const user = (await this.userService.findById(userId)).toJSON()
+        return {
+            name: user.name,
+            email: user.email,
+            id: user._id
+        }
+    }
 }

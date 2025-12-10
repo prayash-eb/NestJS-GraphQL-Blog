@@ -6,9 +6,11 @@ import { AuthResolver } from "./auth.resolver";
 import { UserModule } from "../user/user.module";
 import { PassportModule } from "@nestjs/passport";
 import { JwtModule } from "@nestjs/jwt";
+import { JwtStrategy } from "./strategy/jwt.strategy";
+
 
 @Module({
     imports: [MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]), UserModule, PassportModule, JwtModule],
-    providers: [AuthService, AuthResolver],
+    providers: [AuthService, AuthResolver, JwtStrategy],
 })
 export class AuthModule { }
