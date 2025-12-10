@@ -3,7 +3,7 @@ import { HydratedDocument, Document } from "mongoose";
 import * as bcrypt from "bcrypt"
 
 
-interface UserMethods {
+export interface UserMethods {
     checkPassword(password: string): Promise<boolean>
 }
 

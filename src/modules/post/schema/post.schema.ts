@@ -10,7 +10,7 @@ export class MediaType {
     link: string;
     
     @Prop()
-    public_id: string
+    publicId: string
 }
 
 @Schema({

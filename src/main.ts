@@ -13,7 +13,7 @@ async function bootstrap() {
     graphqlUploadExpress({
       maxFileSize: 1000000,
       maxFiles: 5,
-      overrideSendResponse: false, // This is necessary for nest.js/koa.js
+      overrideSendResponse: false,
     }),
   );
   await app.listen(process.env.PORT ?? 3000);

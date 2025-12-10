@@ -14,5 +14,5 @@ export class CreatePostDto {
 
     @IsOptional()
     @Field(() => [GraphQLUpload], { nullable: true })
-    media: FileUpload[]
+    media?: FileUpload[]
 }

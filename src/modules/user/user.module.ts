@@ -6,13 +6,14 @@ import { UserSchema } from './schema/user.schema';
 import { UserResolver } from './user.resolver';
 import { PostModule } from '../post/post.module';
 import { forwardRef, Inject, UseGuards } from "@nestjs/common";
+import { PubSubService } from "../../common/services/pubsub.service"
 
 @Module({
     imports: [
         MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
         forwardRef(() => PostModule),
     ],
-    providers: [UserService, UserResolver],
+    providers: [UserService, UserResolver, PubSubService],
     exports: [UserService]
 })
 export class UserModule { }

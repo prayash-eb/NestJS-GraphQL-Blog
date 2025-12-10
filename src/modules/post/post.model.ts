@@ -23,8 +23,8 @@ export class Post {
     @Field()
     body: string
 
-    @Field()
-    media: Media
+    @Field(() => [Media], { nullable: true })
+    media?: Media[]
 
     @Field()
     createdAt: Date
