@@ -1,5 +1,15 @@
 import { Field, ObjectType } from "@nestjs/graphql";
-import { User } from "../user/models/user.model";
+
+@ObjectType()
+export class Media {
+    @Field()
+    type: string;
+    @Field()
+    link: string;
+    @Field()
+    publicId: string
+}
+
 
 @ObjectType()
 export class Post {
@@ -12,6 +22,9 @@ export class Post {
 
     @Field()
     body: string
+
+    @Field()
+    media: Media
 
     @Field()
     createdAt: Date

@@ -1,6 +1,18 @@
 import { Types } from "mongoose";
 import { Schema, SchemaFactory, Prop } from "@nestjs/mongoose";
 
+@Schema()
+export class MediaType {
+    @Prop()
+    type: string;
+
+    @Prop()
+    link: string;
+    
+    @Prop()
+    public_id: string
+}
+
 @Schema({
     timestamps: true, toJSON: {
         transform: (doc: any, ret: any) => {
@@ -20,6 +32,11 @@ export class Post {
 
     @Prop({ type: String, required: true })
     body: string;
+
+    @Prop({
+        type: [MediaType]
+    })
+    media: MediaType[]
 }
 
 export const PostSchema = SchemaFactory.createForClass(Post)

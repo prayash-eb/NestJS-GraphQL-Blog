@@ -1,5 +1,6 @@
 import { InputType, Field } from "@nestjs/graphql";
-import { IsString } from "class-validator";
+import { IsOptional, IsString } from "class-validator";
+import { type FileUpload, GraphQLUpload } from "graphql-upload-ts";
 
 @InputType()
 export class CreatePostDto {
@@ -10,4 +11,8 @@ export class CreatePostDto {
     @Field()
     @IsString()
     body: string
+
+    @IsOptional()
+    @Field(() => [GraphQLUpload], { nullable: true })
+    media: FileUpload[]
 }
