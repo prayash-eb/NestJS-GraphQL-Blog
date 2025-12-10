@@ -9,7 +9,6 @@ import { User } from "../user/models/user.model";
 import { JwtAuthGuard } from "../auth/guards/jwt.guard";
 import { UseGuards } from "@nestjs/common";
 
-
 @Resolver(() => Post)
 export class PostResolver {
     constructor(
@@ -17,7 +16,7 @@ export class PostResolver {
         private readonly userService: UserService
     ) { }
 
-    // @UseGuards(JwtAuthGuard)
+    @UseGuards(JwtAuthGuard)
     @Mutation(() => Post)
     async createPost(@GetUser() user: any, @Args("createPostInput") createPostDto: CreatePostDto) {
         return await this.postService.create(user.id, createPostDto)
@@ -41,12 +40,7 @@ export class PostResolver {
 
     @ResolveField(() => User)
     async user(@Parent() post: Post) {
-        const userId = post.user.toString()
-        const user = (await this.userService.findById(userId)).toJSON()
-        return {
-            name: user.name,
-            email: user.email,
-            id: user._id
-        }
+        const { userId } = post;
+        return (await this.userService.findById(userId)).toJSON()
     }
 }

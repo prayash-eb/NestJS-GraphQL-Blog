@@ -1,4 +1,5 @@
 import { ObjectType, Field, HideField } from "@nestjs/graphql";
+import { Post } from "../../post/post.model";
 
 @ObjectType()
 export class User {
@@ -11,4 +12,7 @@ export class User {
 
     @Field()
     email: string
+
+    @Field(() => [Post], { nullable: true })
+    posts?: Post[]
 }

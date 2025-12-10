@@ -19,6 +19,6 @@ export class Post {
     @Field()
     updatedAt: Date
 
-    @Field(() => User)
-    user: string
+    @Field()
+    userId: string
 }
