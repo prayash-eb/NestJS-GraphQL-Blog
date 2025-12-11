@@ -1,5 +1,5 @@
 import { ObjectType, Field, HideField } from "@nestjs/graphql";
-import { Post } from "../../post/post.model";
+import { PaginatedPosts } from "../../post/models/paginated-posts.model";
 
 @ObjectType()
 export class User {
@@ -13,6 +13,6 @@ export class User {
     @Field()
     email: string
 
-    @Field(() => [Post], { nullable: true })
-    posts?: Post[]
+    @Field(() => PaginatedPosts, { nullable: true })
+    posts?: PaginatedPosts
 }

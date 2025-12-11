@@ -29,7 +29,7 @@ export class UserResolver {
 
     @Mutation(() => User)
     async updateUser(@GetUser() user: IAccessTokenPayload, @Args("userInput") updateUserDto: UpdateUserDto) {
-        const {id:userId} = user;
+        const { id: userId } = user;
         return await this.userService.update(userId, updateUserDto)
     }
 
@@ -60,7 +60,9 @@ export class UserResolver {
         const { id: userId } = user;
         const page = pagination?.page || 1;
         const limit = pagination?.limit || 10;
-        return await this.postService.findAllByUserId(userId, page, limit);
+        const sortBy = pagination?.sortBy || "createdAt"
+        const sortOrder = pagination?.sortOrder || "desc"
+        return await this.postService.findAllByUserId(userId, page, limit, sortBy, sortOrder);
     }
 
     @Subscription(() => User, {

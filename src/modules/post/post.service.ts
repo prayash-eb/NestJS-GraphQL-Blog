@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
 import { Post } from "./schema/post.schema";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
@@ -43,7 +43,13 @@ export class PostService {
 
     async update(userId: string, updatePostDto: UpdatePostDto) {
         const userObjectId = toObjectId(userId);
-        const post = await this.postModel.findByIdAndUpdate(userObjectId, {
+        const { postId } = updatePostDto;
+        const postObjectId = toObjectId(postId);
+        console.log(postObjectId, userObjectId);
+        const post = await this.postModel.findOneAndUpdate({
+            userId: userObjectId,
+            _id: postObjectId
+        }, {
             ...updatePostDto
         }, { new: true });
 
@@ -64,10 +70,10 @@ export class PostService {
         return await this.postModel.findById(postObjectId)
     }
 
-    async findAll(page: number = 1, limit: number = 10) {
+    async findAll(page: number = 1, limit: number = 10, sortBy = "createdAt", sortOrder = "desc") {
         const skip = (page - 1) * limit;
         const [items, totalItems] = await Promise.all([
-            this.postModel.find({}).skip(skip).limit(limit).sort({ createdAt: -1 }),
+            this.postModel.find({}).skip(skip).limit(limit).sort({ [sortBy]: sortOrder === "asc" ? 1 : -1 }),
             this.postModel.countDocuments({})
         ]);
 
@@ -84,13 +90,15 @@ export class PostService {
         };
     }
 
-    async findAllByUserId(userId: string, page: number = 1, limit: number = 10) {
+    async findAllByUserId(userId: string, page: number = 1, limit: number = 10, sortBy = "createdAt", sortOrder = "desc") {
         const userObjectId = toObjectId(userId);
         const skip = (page - 1) * limit;
         const [items, totalItems] = await Promise.all([
-            this.postModel.find({ userId: userObjectId }).skip(skip).limit(limit).sort({ createdAt: -1 }),
+            this.postModel.find({ userId: userObjectId }).skip(skip).limit(limit).sort({ [sortBy]: sortOrder === "asc" ? 1 : -1 }),
             this.postModel.countDocuments({ userId: userObjectId })
         ]);
+
+        console.log(items, totalItems);
 
         return {
             items,
@@ -103,5 +111,14 @@ export class PostService {
                 hasPreviousPage: page > 1
             }
         };
+    }
+
+    async deletePost(postId: string) {
+        const postObjectId = toObjectId(postId);
+        const deletedPost = await this.postModel.findByIdAndDelete(postObjectId)
+        if (!deletedPost) {
+            throw new NotFoundException("Post not found")
+        }
+        return deletedPost
     }
 }

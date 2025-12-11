@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ApolloDriverConfig } from '@nestjs/apollo';
 import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin/landingPage/default';
-import graphqlUploadExpress from 'graphql-upload-ts';
 
 @Injectable()
 export class GraphQLConfigService {
@@ -17,6 +16,8 @@ export class GraphQLConfigService {
         'subscriptions-transport-ws': true,
       },
       formatError: (error) => {
+
+        console.log(error);
         const originalError = error.extensions
           ?.originalError as any;
 

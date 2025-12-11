@@ -1,6 +1,20 @@
-import { PartialType } from "@nestjs/graphql";
-import { InputType } from "@nestjs/graphql";
-import { CreatePostDto } from "./create-post.dto";
+
+import { Field, InputType } from "@nestjs/graphql";
+import { IsMongoId, IsString } from "class-validator";
+
 
 @InputType()
-export class UpdatePostDto extends PartialType(CreatePostDto) { }
+export class UpdatePostDto {
+
+    @Field()
+    @IsMongoId()
+    postId: string
+    
+    @Field()
+    @IsString()
+    title: string
+
+    @Field()
+    @IsString()
+    body: string
+}

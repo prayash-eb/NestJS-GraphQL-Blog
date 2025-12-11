@@ -37,13 +37,22 @@ export class PostResolver {
     async getPosts(@Args('pagination', { nullable: true }) pagination?: PaginationArgs) {
         const page = pagination?.page || 1;
         const limit = pagination?.limit || 10;
-        return await this.postService.findAll(page, limit);
+        const sortBy = pagination?.sortBy || "createdAt"
+        const sortOrder = pagination?.sortOrder || "desc"
+        return await this.postService.findAll(page, limit, sortBy, sortOrder);
     }
+
 
     @Query(() => Post)
     async getPostById(@Args("postId") postId: string) {
         return await this.postService.findById(postId)
     }
+
+    @Mutation(() => Post)
+    async deletePostById(@Args("postId") postId: string) {
+        return await this.postService.deletePost(postId)
+    }
+
 
     @ResolveField(() => User)
     async user(@Parent() post: Post) {
