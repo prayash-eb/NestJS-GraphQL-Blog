@@ -1,9 +1,5 @@
 # GraphQL Blog API
 
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
-
 A modern, scalable GraphQL-based blog API built with NestJS, Apollo Server, and MongoDB. Features user authentication, post management, comments, and file uploads with pagination support.
 
 ## 📋 Table of Contents
@@ -17,15 +13,12 @@ A modern, scalable GraphQL-based blog API built with NestJS, Apollo Server, and 
 - [Getting Started](#getting-started)
 - [API Documentation](#api-documentation)
 - [Available Scripts](#available-scripts)
-- [Testing](#testing)
-- [License](#license)
 
 ## ✨ Features
 
 - **GraphQL API** - Modern query language with Apollo Server
 - **User Authentication** - JWT-based authentication with Passport.js
 - **Post Management** - Create, read, update, and delete blog posts
-- **Comment System** - Users can comment on posts
 - **File Upload** - Image uploads to Cloudinary with validation
 - **Pagination** - Cursor and page-based pagination for posts and users
 - **Real-time Updates** - GraphQL subscriptions for notifications
@@ -40,10 +33,9 @@ A modern, scalable GraphQL-based blog API built with NestJS, Apollo Server, and 
 - **API**: GraphQL with Apollo Server ^5.2.0
 - **Database**: MongoDB with Mongoose ^8.20.2
 - **Authentication**: JWT with Passport.js
-- **Validation**: class-validator, class-transformer, Joi
+- **Validation**: class-validator, class-transformer
 - **File Upload**: Cloudinary, graphql-upload-ts
 - **Password Hashing**: bcrypt
-- **Testing**: Jest
 - **Code Quality**: ESLint, Prettier
 - **Language**: TypeScript
 
@@ -150,7 +142,7 @@ npm run start:prod
 #### Sign Up
 ```graphql
 mutation {
-  signUp(input: {
+  signUp(createUserInput: {
     email: "user@example.com"
     password: "password123"
     firstName: "John"
@@ -159,8 +151,6 @@ mutation {
     user {
       id
       email
-      firstName
-      lastName
     }
     accessToken
   }
@@ -170,7 +160,7 @@ mutation {
 #### Sign In
 ```graphql
 mutation {
-  signIn(input: {
+  signIn(loginUserInput: {
     email: "user@example.com"
     password: "password123"
   }) {
@@ -188,21 +178,21 @@ mutation {
 #### Get Posts with Pagination
 ```graphql
 query {
-  getPosts(pagination: { page: 1, limit: 10 }) {
+  getPosts(pagination: { page: 1, limit: 10, sortBy:"createdAt", sortOrder:"asc" | "desc }) {
     items {
       id
       title
       body
       author {
         id
-        firstName
-        lastName
+        name
+        email
       }
       createdAt
       updatedAt
     }
     pageInfo {
-      totalCount
+      totalItems
       currentPage
       totalPages
       hasNextPage
@@ -217,13 +207,16 @@ query {
 mutation {
   createPost(input: {
     title: "My First Post"
-    body: "This is my first blog post"
+    body: "This is my first blog post",
+    media:[null]  # 2 null for two files and so on.
   }) {
     id
     title
     body
   }
 }
+
+- Select file/files from studio. Make sure to put the header apollo-require-preflight : true to prevent graphql CSRF error. 
 ```
 
 ### Users
@@ -231,12 +224,11 @@ mutation {
 #### Get Users with Pagination
 ```graphql
 query {
-  getUsers(pagination: { page: 1, limit: 10 }) {
+  getUsers(pagination: { page: 1, limit: 10, sortBy:"createdAt", sortOrder:"asc" | "desc" }) {
     items {
       id
       email
-      firstName
-      lastName
+      name
     }
     pageInfo {
       totalCount
@@ -250,29 +242,17 @@ query {
 #### Update User Profile
 ```graphql
 mutation {
-  updateUser(input: {
-    firstName: "Jane"
-    lastName: "Doe"
+  updateUser(updateUserInput: {
+   name
+   email
   }) {
     id
     email
-    firstName
-    lastName
+    name
   }
 }
 ```
 
-### File Upload
-
-```graphql
-mutation {
-  uploadFile(file: <File>) {
-    url
-    publicId
-    size
-  }
-}
-```
 
 ## 📜 Available Scripts
 
@@ -285,30 +265,8 @@ mutation {
 | `npm run build` | Build the project |
 | `npm run lint` | Run ESLint |
 | `npm run format` | Format code with Prettier |
-| `npm test` | Run unit tests |
-| `npm run test:watch` | Run tests in watch mode |
-| `npm run test:cov` | Run tests with coverage report |
-| `npm run test:e2e` | Run end-to-end tests |
 
-## 🧪 Testing
 
-### Unit Tests
-
-```bash
-npm run test
-```
-
-### End-to-End Tests
-
-```bash
-npm run test:e2e
-```
-
-### Test Coverage
-
-```bash
-npm run test:cov
-```
 
 ## 🔐 Security Features
 
@@ -316,7 +274,6 @@ npm run test:cov
 - **JWT Authentication**: Secure token-based authentication
 - **Input Validation**: Automatic request validation
 - **CORS**: Configurable CORS settings
-- **Rate Limiting**: Available for API endpoints
 - **File Type Validation**: Validates uploaded files
 
 ## 📝 Key Modules
@@ -325,8 +282,6 @@ npm run test:cov
 Handles user authentication with JWT tokens and Passport.js strategies.
 
 - JWT-based token generation
-- Refresh token support
-- Role-based access control ready
 
 ### User Module
 Manages user registration, profile updates, and user queries.
@@ -343,12 +298,6 @@ Complete post management system with CRUD operations.
 - Pagination and filtering
 - Timestamp tracking
 
-### Comment Module
-Allows users to comment on posts.
-
-- Comment creation and management
-- Author tracking
-- Post association
 
 ### Cloudinary Module
 File upload and management service.
@@ -357,10 +306,6 @@ File upload and management service.
 - File size limiting (default: 1MB max per file, 5 files max)
 - Cloudinary integration
 
-## 📖 Additional Resources
-
-For more detailed information about pagination implementation, see [PAGINATION_GUIDE.md](./PAGINATION_GUIDE.md).
-
 ### Helpful Links
 
 - [NestJS Documentation](https://docs.nestjs.com)
@@ -368,28 +313,3 @@ For more detailed information about pagination implementation, see [PAGINATION_G
 - [Apollo Server Documentation](https://www.apollographql.com/docs/apollo-server/)
 - [Mongoose Documentation](https://mongoosejs.com/)
 - [Passport.js Documentation](https://www.passportjs.org/)
-
-## 🐛 Troubleshooting
-
-### MongoDB Connection Issues
-- Ensure MongoDB is running and accessible
-- Check `MONGODB_URI` in your `.env` file
-- Verify network access if using MongoDB Atlas
-
-### GraphQL Playground Not Loading
-- Ensure Apollo Server is properly configured
-- Check that the port is not in use
-- Verify all environment variables are set correctly
-
-### File Upload Errors
-- Check Cloudinary credentials are valid
-- Ensure file size is within limits
-- Verify file type is supported
-
-## 📄 License
-
-UNLICENSED - Private project
-
-## 👨‍💻 Author
-
-Built with NestJS and GraphQL
