@@ -16,10 +16,8 @@ export class GraphQLConfigService {
         'subscriptions-transport-ws': true,
       },
       formatError: (error) => {
-
         console.log(error);
-        const originalError = error.extensions
-          ?.originalError as any;
+        const originalError = error.extensions?.originalError as any;
 
         if (!originalError) {
           return {

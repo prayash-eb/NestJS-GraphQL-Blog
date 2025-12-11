@@ -6,7 +6,16 @@ import { fileTypeFromStream } from 'file-type';
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 const MAX_FILES = 5;
 const UPLOAD_FOLDER = 'blog-posts';
-const ALLOWED_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp', 'video/mp4', 'video/mpeg', 'video/quicktime'];
+const ALLOWED_TYPES = [
+  'image/jpeg',
+  'image/jpg',
+  'image/png',
+  'image/gif',
+  'image/webp',
+  'video/mp4',
+  'video/mpeg',
+  'video/quicktime',
+];
 
 interface UploadedMedia {
   type: string;
@@ -16,11 +25,13 @@ interface UploadedMedia {
 
 @Injectable()
 export class FileUploadService {
-  constructor(private readonly cloudinaryService: CloudinaryService) { }
+  constructor(private readonly cloudinaryService: CloudinaryService) {}
   async uploadMultipleFiles(files: FileUpload[]): Promise<UploadedMedia[]> {
     if (!files || files.length === 0) return [];
     if (files.length > MAX_FILES) {
-      throw new BadRequestException(`Maximum ${MAX_FILES} files allowed. You uploaded ${files.length} files.`);
+      throw new BadRequestException(
+        `Maximum ${MAX_FILES} files allowed. You uploaded ${files.length} files.`,
+      );
     }
 
     const uploadPromises = files.map(async (filePromise) => {
@@ -29,27 +40,29 @@ export class FileUploadService {
 
       let fileMimetype = mimetype as string;
 
-      const fileStream = createReadStream()
+      const fileStream = createReadStream();
 
-      if (fileMimetype === "application/octet-stream") {
-        let fileType = await fileTypeFromStream(fileStream)
-        fileMimetype = fileType?.mime ? fileType.mime : mimetype
+      if (fileMimetype === 'application/octet-stream') {
+        let fileType = await fileTypeFromStream(fileStream);
+        fileMimetype = fileType?.mime ? fileType.mime : mimetype;
       }
 
       // Validate file type
       if (!ALLOWED_TYPES.includes(fileMimetype)) {
-        throw new BadRequestException(`File type "${mimetype}" not allowed. Allowed: ${ALLOWED_TYPES.join(', ')}`);
+        throw new BadRequestException(
+          `File type "${mimetype}" not allowed. Allowed: ${ALLOWED_TYPES.join(', ')}`,
+        );
       }
 
       // Upload stream directly
       const result = await this.cloudinaryService.uploadMediaStream(
         fileStream,
         UPLOAD_FOLDER,
-        filename
+        filename,
       );
 
       return {
-        type: "media",
+        type: 'media',
         link: result.secure_url,
         publicId: result.public_id,
       };

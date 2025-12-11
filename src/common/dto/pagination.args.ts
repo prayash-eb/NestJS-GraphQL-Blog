@@ -2,8 +2,8 @@ import { Field, InputType, Int, registerEnumType } from '@nestjs/graphql';
 import { IsOptional, IsInt, Min, Max, IsEnum } from 'class-validator';
 
 export enum SortOrder {
-  ASC = "asc",
-  DESC = "desc",
+  ASC = 'asc',
+  DESC = 'desc',
 }
 registerEnumType(SortOrder, { name: 'SortOrder' });
 
@@ -24,7 +24,7 @@ export class PaginationArgs {
 
   @Field({ nullable: true })
   @IsOptional()
-  sortBy?: string
+  sortBy?: string;
 
   @Field(() => SortOrder, { nullable: true, defaultValue: SortOrder.DESC })
   @IsEnum(SortOrder)

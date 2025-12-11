@@ -9,11 +9,17 @@ import { FileUploadService } from './services/file-upload.service';
 import { PubSubService } from '../../common/services/pubsub.service';
 
 @Module({
-    imports: [
-        MongooseModule.forFeature([{ name: Post.name, schema: PostSchema }]),
-        forwardRef(() => UserModule)
-    ],
-    providers: [PostService, PostResolver, CloudinaryService, FileUploadService, PubSubService],
-    exports: [PostService]
+  imports: [
+    MongooseModule.forFeature([{ name: Post.name, schema: PostSchema }]),
+    forwardRef(() => UserModule),
+  ],
+  providers: [
+    PostService,
+    PostResolver,
+    CloudinaryService,
+    FileUploadService,
+    PubSubService,
+  ],
+  exports: [PostService],
 })
-export class PostModule { }
+export class PostModule {}

@@ -1,14 +1,14 @@
-import { ObjectType, Field, } from "@nestjs/graphql";
-import { User } from "../../user/models/user.model";
+import { ObjectType, Field } from '@nestjs/graphql';
+import { User } from '../../user/models/user.model';
 
 @ObjectType()
 export class AuthResponse {
-    @Field(() => User)
-    user: User
+  @Field(() => User)
+  user: User;
 
-    @Field()
-    accessToken: string
+  @Field()
+  accessToken: string;
 
-    @Field({ nullable: true })
-    refreshToken?: string
+  @Field({ nullable: true })
+  refreshToken?: string;
 }

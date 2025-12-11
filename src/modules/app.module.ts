@@ -5,12 +5,7 @@ import { PostModule } from './post/post.module';
 import { AuthModule } from './auth/auth.module';
 
 @Module({
-  imports: [
-    CoreModule,
-    AuthModule,
-    UserModule,
-    PostModule
-  ],
+  imports: [CoreModule, AuthModule, UserModule, PostModule],
   providers: [],
 })
-export class AppModule { }
+export class AppModule {}
