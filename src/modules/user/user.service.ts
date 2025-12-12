@@ -18,7 +18,7 @@ export class UserService {
   constructor(
     @InjectModel(User.name) private userModel: Model<UserDocument>,
     private readonly pubSub: PubSubService,
-  ) {}
+  ) { }
 
   async create(userInput: CreateUserDto): Promise<UserDocument> {
     const user = await this.userModel.create({
@@ -93,5 +93,13 @@ export class UserService {
       email,
     });
     return user;
+  }
+
+  async deleteUserById(userId: string) {
+    const userObjectId = toObjectId(userId);
+    const deletedUser = await this.userModel.findOneAndDelete({
+      _id: userObjectId
+    })
+    return deletedUser
   }
 }

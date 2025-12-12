@@ -3,6 +3,8 @@ import { AuthService } from './auth.service';
 import { CreateUserDto } from '../user/dtos/create-user.dto';
 import { LoginUserDto } from '../user/dtos/login-user.dto';
 import { AuthResponse } from './models/auth.model';
+import { UseGuards } from '@nestjs/common';
+import { GqlThrottleGuard } from '../../common/guards/graphql-throttle.guard';
 
 @Resolver()
 export class AuthResolver {

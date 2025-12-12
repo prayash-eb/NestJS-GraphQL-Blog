@@ -9,6 +9,9 @@ import { MongooseConfigService } from './mongoose/mongoose.config-service';
 import { JwtConfigService } from './jwt/jwt.config-service';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 
+import { ThrottlerModule } from '@nestjs/throttler';
+import { ThrottlerConfigService } from './throttler/throttler.config-service';
+
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
@@ -22,9 +25,13 @@ import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
       useClass: GraphQLConfigService,
     }),
 
+    ThrottlerModule.forRootAsync({
+      useClass: ThrottlerConfigService
+    }),
+
     MongooseModule.forRootAsync({
       useClass: MongooseConfigService,
     }),
   ],
 })
-export class CoreModule {}
+export class CoreModule { }

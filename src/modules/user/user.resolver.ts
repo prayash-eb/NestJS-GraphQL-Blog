@@ -12,15 +12,15 @@ import { User } from './models/user.model';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { UpdateUserDto } from './dtos/update-user.dto';
 import { GetUser } from '../../decorators/get-user';
-import { Post } from '../post/post.model';
 import { PostService } from '../post/post.service';
-import { forwardRef, Inject } from '@nestjs/common';
+import { forwardRef, Inject, UseGuards } from '@nestjs/common';
 import { PaginationArgs } from '../../common/dto/pagination.args';
 import { PaginatedUsers } from './models/paginated-users.model';
 import { PaginatedPosts } from '../post/models/paginated-posts.model';
 import { PubSubService } from '../../common/services/pubsub.service';
 import { SubscriptionEvent } from '../../common/enums/subscription-events.enum';
 import { type IAccessTokenPayload } from '../auth/interface/token-payload';
+import { GqlThrottleGuard } from '../../common/guards/graphql-throttle.guard';
 
 @Resolver(() => User)
 export class UserResolver {
@@ -28,7 +28,7 @@ export class UserResolver {
     private readonly userService: UserService,
     @Inject(forwardRef(() => PostService)) private postService: PostService,
     private readonly pubSub: PubSubService,
-  ) {}
+  ) { }
 
   async createUser(@Args('userInput') createUserDto: CreateUserDto) {
     const user = await this.userService.create(createUserDto);
@@ -63,6 +63,11 @@ export class UserResolver {
   async userByEmail(@Args('email') email: string) {
     const user = await this.userService.findByEmail(email);
     return user?.toJSON();
+  }
+
+  @Mutation(() => User, { nullable: true })
+  async deleteUser(@Args("userId") userId: string) {
+    return await this.userService.deleteUserById(userId);
   }
 
   @ResolveField(() => PaginatedPosts)
