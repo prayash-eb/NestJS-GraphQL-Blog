@@ -21,12 +21,14 @@ import { PubSubService } from '../../common/services/pubsub.service';
 import { SubscriptionEvent } from '../../common/enums/subscription-events.enum';
 import { type IAccessTokenPayload } from '../auth/interface/token-payload';
 import { GqlThrottleGuard } from '../../common/guards/graphql-throttle.guard';
+import { PostLoader } from '../post/post.loader';
 
 @Resolver(() => User)
 export class UserResolver {
   constructor(
     private readonly userService: UserService,
     @Inject(forwardRef(() => PostService)) private postService: PostService,
+    private postLoader: PostLoader,
     private readonly pubSub: PubSubService,
   ) { }
 

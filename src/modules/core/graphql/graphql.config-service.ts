@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ApolloDriverConfig } from '@nestjs/apollo';
 import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin/landingPage/default';
+import { PostLoader } from '../../post/post.loader';
 
 @Injectable()
 export class GraphQLConfigService {

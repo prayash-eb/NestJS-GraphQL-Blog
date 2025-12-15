@@ -7,6 +7,7 @@ import { UserModule } from '../user/user.module';
 import { CloudinaryService } from '../cloudinary/cloudinary.service';
 import { FileUploadService } from './services/file-upload.service';
 import { PubSubService } from '../../common/services/pubsub.service';
+import { PostLoader } from './post.loader';
 
 @Module({
   imports: [
@@ -20,6 +21,6 @@ import { PubSubService } from '../../common/services/pubsub.service';
     FileUploadService,
     PubSubService,
   ],
-  exports: [PostService],
+  exports: [PostService, PostLoader],
 })
 export class PostModule {}
